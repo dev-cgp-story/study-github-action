@@ -1,5 +1,8 @@
 name: Deploy Project
-on: [tag]
+on:
+  create:
+    tags:
+      - v*
 jobs:
   task1:
     runs-on: ubuntu-latest
