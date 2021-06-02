@@ -1,0 +1,67 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Deploy CI
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Set cached node_modules
+        if: ${{ success() }}
+        uses: actions/cache@v1
+        with:
+          path: node_modules
+          key: ${{runner.OS}}-build-${{hashFiles('**/yarn.lock')}}
+          restore-keys: |
+            ${{ runner.OS }}-build-${{ runner.OS }}-
+
+      - name: Setup Node.js
+        if: ${{ success() }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14.x
+
+      - name: Setup Git Config
+        if: ${{ success() }}
+        run: |
+          git config --local user.email "-"
+          git config --local user.name "CI Bot"
+
+      - name: Install Node.js
+        if: ${{ success() }}
+        run: npm ci
+
+      - name: Merge
+        if: ${{ success() }}
+        run: |
+          git branch -a
+          git switch --track origin/production
+          git show-ref
+          git merge --no-ff --no-edit $GITHUB_REF
+          git show-ref
+
+      - name: Build
+        if: ${{ success() }}
+        run: |
+          npm run build
+          git add -f docs
+          git commit -m "Build 🍻"
+        env:
+          NODE_ENV: production
+          BUILD_PATH: ./docs
+
+      - name: Deploy
+        if: ${{ success() }}
+        run: |
+          git push origin production
