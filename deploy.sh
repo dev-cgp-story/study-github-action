@@ -14,4 +14,5 @@ git reset production
 git add -f build
 git commit -m "Build 🍻"
 
+git switch master
 git branch -D temp/production
