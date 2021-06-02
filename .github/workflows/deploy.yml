@@ -4,9 +4,8 @@
 name: Deploy CI
 
 on:
-  create:
-    tags:
-      - v*
+  push:
+    branches: [master]
 
 jobs:
   build:
@@ -42,7 +41,7 @@ jobs:
         run: |
           git branch -a
           git switch production || git switch origin/production
-          git merge --no-ff --no-edit master
+          git merge --no-ff --no-edit $GITHUB_HEAD_REF
 
       - name: Build
         if: ${{ success() }}
