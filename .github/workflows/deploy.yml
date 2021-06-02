@@ -26,7 +26,7 @@ jobs:
       - name: Merge
         if: ${{ success() }}
         run: |
-          git switch production
+          git switch production || git switch origin/production
           git merge --no-ff --no-edit master
 
       - name: Build
