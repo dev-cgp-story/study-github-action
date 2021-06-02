@@ -59,6 +59,7 @@ jobs:
           git commit -m "Build 🍻"
         env:
           NODE_ENV: production
+          BUILD_PATH: ./docs
 
       - name: Deploy
         if: ${{ success() }}
