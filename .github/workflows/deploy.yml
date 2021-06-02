@@ -55,7 +55,7 @@ jobs:
         if: ${{ success() }}
         run: |
           npm run build
-          git add -f build
+          git add -f docs
           git commit -m "Build 🍻"
         env:
           NODE_ENV: production
