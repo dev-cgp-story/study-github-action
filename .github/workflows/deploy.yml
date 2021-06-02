@@ -45,13 +45,10 @@ jobs:
       - name: Merge
         if: ${{ success() }}
         run: |
-          printenv
           git branch -a
           git switch --track origin/production
-          echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
-          printenv
           git show-ref
-          git merge --no-ff --no-edit $GITHUB_HEAD_REF
+          git merge --no-ff --no-edit $GITHUB_REF
           git show-ref
 
       - name: Build
