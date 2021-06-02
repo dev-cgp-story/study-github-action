@@ -32,6 +32,12 @@ jobs:
         with:
           node-version: 14.x
 
+      - name: Setup Git Config
+        if: ${{ success() }}
+        run: |
+          git config --local user.email "-"
+          git config --local user.name "CI Bot"
+
       - name: Install Node.js
         if: ${{ success() }}
         run: npm ci
