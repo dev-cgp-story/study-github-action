@@ -18,16 +18,29 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Install
+      - name: Set cached node_modules
+        if: ${{ success() }}
+        uses: actions/cache@v1
+        with:
+          path: node_modules
+          key: ${{runner.OS}}-build-${{hashFiles('**/yarn.lock')}}
+          restore-keys: |
+            ${{ runner.OS }}-build-${{ runner.OS }}-
+
+      - name: Setup Node.js
+        if: ${{ success() }}
         uses: actions/setup-node@v2
         with:
           node-version: 14.x
 
-      - run: npm ci
+      - name: Install Node.js
+        if: ${{ success() }}
+        run: npm ci
 
       - name: Merge
         if: ${{ success() }}
         run: |
+          git branch -a
           git switch production || git switch origin/production
           git merge --no-ff --no-edit master
 
