@@ -64,7 +64,7 @@ jobs:
       - name: Deploy
         if: ${{ success() }}
         run: |
-          git push production
+          git push origin production
 
       - name: Clear
         if: ${{ always() }}
