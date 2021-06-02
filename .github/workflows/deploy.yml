@@ -4,10 +4,9 @@
 name: Node.js CI
 
 on:
-  push:
-    branches: [master]
-  pull_request:
-    branches: [master]
+  create:
+    tags:
+      - v*
 
 jobs:
   build:
@@ -17,11 +16,38 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Install and Build
+      - name: Install
         uses: actions/setup-node@v2
         with:
           node-version: 14.x
         run: |
           npm ci
-          npm run build
+
+      - name: Merge
+        if: ${{ success() }}
+        run: |
           git switch production
+          git merge --no-ff --no-edit master
+
+      - name: Build
+        if: ${{ success() }}
+        run: |
+          git checkout -b temp/production
+          npm run build
+          git add -f build
+          git commit -m "Build 🍻"
+
+          git reset production
+          git add -f build
+          git commit -m "Build 🍻"
+
+      - name: Deploy
+        if: ${{ success() }}
+        run: |
+          git push production
+
+      - name: Clear
+        if: ${{ always() }}
+        run: |
+          git switch master
+          git branch -D temp/production
