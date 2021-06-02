@@ -46,7 +46,7 @@ jobs:
         if: ${{ success() }}
         run: |
           git branch -a
-          git switch production || git switch origin/production
+          git switch --track origin/production
           git merge --no-ff --no-edit $GITHUB_HEAD_REF
 
       - name: Build
