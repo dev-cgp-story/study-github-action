@@ -54,21 +54,13 @@ jobs:
       - name: Build
         if: ${{ success() }}
         run: |
-          git checkout -b temp/production
           npm run build
           git add -f build
           git commit -m "Build 🍻"
-          git reset production
-          git add -f build
-          git commit -m "Build 🍻"
+        env:
+          NODE_ENV: production
 
       - name: Deploy
         if: ${{ success() }}
         run: |
           git push origin production
-
-      - name: Clear
-        if: ${{ always() }}
-        run: |
-          git switch master
-          git branch -D temp/production
