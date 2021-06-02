@@ -13,3 +13,5 @@ git commit -m "Build 🍻"
 git reset production
 git add -f build
 git commit -m "Build 🍻"
+
+git branch -D temp/production
